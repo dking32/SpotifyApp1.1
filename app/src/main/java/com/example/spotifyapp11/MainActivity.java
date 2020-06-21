@@ -5,7 +5,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.FrameLayout;
 
+import com.example.spotifyapp11.ui.dashboard.SearchFragment;
+import com.example.spotifyapp11.ui.home.HomeFragment;
+import com.example.spotifyapp11.ui.notifications.NotificationsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.annotation.NonNull;
@@ -15,22 +19,28 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.viewpager.widget.ViewPager;
 
 public class MainActivity extends AppCompatActivity {
+
+    private HomeFragment homeFrag;
+    private SearchFragment searchFrag;
+    private NotificationsFragment notifFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_home, R.id.navigation_search, R.id.navigation_notifications)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        NavigationUI.setupWithNavController(navView, navController);
+        navView.setOnNavigationItemSelectedListener(navListener);
+        // Passing each menu ID as a set of IDs because each menu should be considered as top level destinations.
+
+        homeFrag = new HomeFragment();
+        searchFrag = new SearchFragment();
+        notifFrag = new NotificationsFragment();
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                homeFrag).commit();
     }
 
 
@@ -52,21 +62,30 @@ public class MainActivity extends AppCompatActivity {
 
                     switch(item.getItemId()) {
                         case R.id.navigation_home:
-                            Log.d("debug","clicked bottom nav");
+                            selectedFragment = homeFrag;
                             break;
                         case R.id.navigation_search:
-                            Log.d("debug","clicked bottom nav");
+                            selectedFragment = searchFrag;
                             break;
                         case R.id.navigation_notifications:
-                            Log.d("debug","clicked bottom nav");
+                            selectedFragment = notifFrag;
                             Log.d("sdfsdf", "selected result frag");
                             break;
                     }
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment,
-//                            selectedFragment).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            selectedFragment).commit();
 
                     return true;
                 }
             };
+
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//
+//        //Save the fragment's instance
+//        getSupportFragmentManager().putFragment(outState, "searchFrag", searchFrag);
+//        Log.d("debugging", "fragment saved in activity");
+//    }
 
 }
